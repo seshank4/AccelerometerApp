@@ -7,12 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener{
 
 
     private GestureDetectorCompat detector;
+    private Animation animation;
+    ImageView imageView;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -24,9 +29,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        imageView = (ImageView) findViewById(R.id.tapMeImage);
         detector = new GestureDetectorCompat(this, this);
         detector.setOnDoubleTapListener(this);
+        animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
     }
 
     @Override
@@ -41,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     @Override
     public boolean onDoubleTapEvent(MotionEvent e) {
+
+        imageView.startAnimation(animation);
         return true;
     }
 
