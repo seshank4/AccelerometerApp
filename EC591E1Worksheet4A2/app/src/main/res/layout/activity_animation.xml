@@ -9,4 +9,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.bu.cs591.ganesh.ec591e1worksheet4a.AnimationActivity">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/android_img"
+        android:cropToPadding="false" />
 </RelativeLayout>
