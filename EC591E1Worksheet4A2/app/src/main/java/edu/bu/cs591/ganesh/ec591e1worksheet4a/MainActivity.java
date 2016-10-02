@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     private GestureDetectorCompat detector;
     private Animation animation;
+    private static final int MIN_FLING_VELOCITY = 800;
     ImageView imageView;
 
     @Override
@@ -79,8 +80,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        Intent intent = new Intent(getApplicationContext(), AnimationActivity.class );
-        startActivity(intent);
+
+        if(e2.getX() - e1.getX() > 300 && Math.abs(velocityX) > Math.abs(velocityY) && Math.abs(velocityX) > MIN_FLING_VELOCITY) {
+            Intent intent = new Intent(getApplicationContext(), AnimationActivity.class);
+            startActivity(intent);
+        }
         return true;
     }
 }

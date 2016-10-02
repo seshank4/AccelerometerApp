@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.GestureDetector;
 import android.support.v4.view.GestureDetectorCompat;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class AnimationActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
@@ -19,10 +22,31 @@ public class AnimationActivity extends AppCompatActivity implements GestureDetec
     private float mAccelCurrent;
     private float mAccelLast;
     private SensorManager sManager;
+    private GestureDetectorCompat detector;
+    private Animation animationRotateRightFast;
+    private Animation animationRotateRightSlow;
+    private Animation animationRotateLeftFast;
+    private Animation animationRotateLeftSlow;
+    private static final int THRESHOLD_VELOCITY = 10000;
+    private static final int MIN_FLING_VELOCITY = 100;
+    private ImageView imageView;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        this.detector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        detector = new GestureDetectorCompat(this, this);
+        animationRotateRightFast = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_right_fast);
+        animationRotateRightSlow = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_right_slow);
+        animationRotateLeftFast = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_left_fast);
+        animationRotateLeftSlow = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_left_slow);
+        imageView = (ImageView)findViewById(R.id.flingMe);
+
         setContentView(R.layout.activity_animation);
         imgLinearLayout = (LinearLayout) findViewById(R.id.imgLinearLayout);
 
@@ -92,6 +116,20 @@ public class AnimationActivity extends AppCompatActivity implements GestureDetec
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
+        imageView = (ImageView)findViewById(R.id.flingMe);
+        if(e2.getX() - e1.getX() > 200) {
+            if ((Math.abs(velocityX) > Math.abs(velocityY)) && Math.abs(velocityX) > THRESHOLD_VELOCITY) {
+                imageView.startAnimation(animationRotateRightFast);
+            } else if ((Math.abs(velocityX) > Math.abs(velocityY)) && Math.abs(velocityX) < THRESHOLD_VELOCITY && velocityX > MIN_FLING_VELOCITY) {
+                imageView.startAnimation(animationRotateRightSlow);
+            }
+        }else if(e1.getX() - e2.getX() > 200){
+            if ((Math.abs(velocityX) > Math.abs(velocityY)) && Math.abs(velocityX) > THRESHOLD_VELOCITY) {
+                imageView.startAnimation(animationRotateLeftFast);
+            } else if ((Math.abs(velocityX) > Math.abs(velocityY)) && Math.abs(velocityX) < THRESHOLD_VELOCITY && Math.abs(velocityX) > MIN_FLING_VELOCITY) {
+                imageView.startAnimation(animationRotateLeftSlow);
+            }
+        }
+        return true;
     }
 }
