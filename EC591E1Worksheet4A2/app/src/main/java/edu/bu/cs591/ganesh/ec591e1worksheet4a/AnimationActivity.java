@@ -118,39 +118,53 @@ public class AnimationActivity extends AppCompatActivity implements GestureDetec
                 float deltaAccl = mAccelCurrent - mAccelLast;
                 mAccel = mAccel * 0.9f + deltaAccl;
                 double deltaTime = curTime - lastUpdate;
+                double speed = Math.abs(x + y + z - last_x - last_y - last_z)/ deltaTime * 10000;
                 if ((deltaTime) > 100) {
+
                     imageView = (ImageView)findViewById(R.id.flingMe);
                     if(Math.abs(linearX) > Math.abs((linearY+9.8)) ) {
-                        if (linearX > 0 && Math.abs(linearX) > 5 && deltaX>5 && mAccelCurrent<15) {
+                        if (linearX > 0 && Math.abs(linearX) > 5 && deltaX>5 && mAccelCurrent < 15) {
                             imageView.startAnimation(animationSlideLeft);
-                            lastUpdate = curTime;
                             Log.i("deltas ",String.valueOf(mAccel));
                             Log.i("acc","mAcc : "+mAccelCurrent);
-                        } else if (linearX < 0 && Math.abs(linearX) > 5 && deltaX<-5 && mAccelCurrent<15) {
+                            Log.i("acc","speed : " + speed);
+                            lastUpdate = curTime;
+                        } else if (linearX < 0 && Math.abs(linearX) > 5 && deltaX<-5 && mAccelCurrent < 15) {
                             imageView.startAnimation(animationSlideRight);
-                            lastUpdate = curTime;
                             Log.i("deltas ",String.valueOf(mAccel));
                             Log.i("acc","mAcc : "+mAccelCurrent);
+                            Log.i("acc","speed : " + speed);
+                            lastUpdate = curTime;
                         }
                     }else if(Math.abs(linearY) > Math.abs((linearX))) {
-                        if (linearY >0 && Math.abs(linearY) > 5 && deltaY<-5 && mAccelCurrent>15) {
-                            imageView.startAnimation(animationSlideDown);
-                            lastUpdate = curTime;
-                            Log.i("acc","mAcc : " +mAccelCurrent);
-                        } else if (linearY < 0 && Math.abs(linearY) > 5 && deltaY>2 && mAccelCurrent>5) {
+                         if (linearY < 0 && Math.abs(linearY) > 5 && deltaY>2 &&  mAccelCurrent > 5) {
                             imageView.startAnimation(animationSlideUp);
                             Log.i("acc","mAcc : "+mAccelCurrent);
-                            lastUpdate = curTime;
+                             Log.i("acc","speed : " + speed);
+                             lastUpdate = curTime;
+                        }else if (linearY >0 && Math.abs(linearY) > 5 && deltaY<-5 && mAccelCurrent > 15) {
+                            imageView.startAnimation(animationSlideDown);
+                            Log.i("acc","mAcc : " +mAccelCurrent);
+                             Log.i("acc","speed : " + speed);
+                             lastUpdate = curTime;
                         }
+                    }
+
+
+                    if(mAccel > SIGNIFICANT_SHAKE){
+                        lastUpdate = curTime;
+                        if(speed>=2500) {
+                            imageView.startAnimation(animationShake);
+                        }
+                        Log.i("deltas ",String.valueOf(mAccel));
+                        Log.i("deltas ", "x" + deltaX);
+                        Log.i("deltas ","previos x :" + last_x);
+                        double x1 = x-last_x;
+                        Log.i("acc", "speed :"+ speed);
                     }
                     last_x = linearX;
                     last_y = linearY;
                     last_z = linearZ;
-
-                    if(mAccel > SIGNIFICANT_SHAKE){
-                        imageView.startAnimation(animationShake);
-                        Log.i("deltas ",String.valueOf(mAccel));
-                    }
                     }
                 }
         }
